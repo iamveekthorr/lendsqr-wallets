@@ -33,12 +33,12 @@ import { AuthModule } from './auth/auth.module';
       }),
       inject: [ConfigService],
     }),
-    UsersModule,
-    AuthModule,
     HttpModule.register({
       timeout: 15000,
       maxRedirects: 5,
     }),
+    UsersModule,
+    AuthModule,
   ],
   providers: [
     {
