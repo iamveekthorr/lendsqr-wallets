@@ -17,7 +17,7 @@ export enum ErrorMessage {
 
   PASSWORD_MISMATCH = 'Password and confirm password do not match.',
 
-  ENTITY_ALREADY_EXIST = 'Entity cannot be created!. This entity already exists',
+  ENTITY_ALREADY_EXIST = 'Failed to create entry using provided data. This entity already exists',
 
   BUSINESS_TYPE_DOES_NOT_MATCH_REQUIRED_TYPE = 'The business type you provided does not match the required business type!, [charity, corporate]',
 

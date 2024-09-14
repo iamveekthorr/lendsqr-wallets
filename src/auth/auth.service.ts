@@ -1,8 +1,10 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Knex } from 'knex';
+import { AxiosError } from 'axios';
 
 import { KNEX_CONNECTION } from '~/constants/constants';
 
@@ -14,13 +16,15 @@ import { User } from '~/users/schemas/users.schema';
 import { JWTPayload } from './jwt-payload.type';
 import { AuthDTO } from './dto/auth.dto';
 import { RegistrationDTO } from './dto/registration.dto';
-import { plainToInstance } from 'class-transformer';
+import { HttpService } from '@nestjs/axios';
+import { catchError, firstValueFrom, of, throwError } from 'rxjs';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly httpService: HttpService,
     @Inject(KNEX_CONNECTION) private readonly knex: Knex<User, User[]>,
   ) {}
 
@@ -40,7 +44,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async refreshToken(id: string) {
+  private async refreshToken(id: string) {
     const user = await this.knex('users').where({ id }).first();
 
     const tokens = await this.generateTokens({
@@ -49,6 +53,38 @@ export class AuthService {
     });
 
     return { tokens };
+  }
+
+  private async checkKarmaBlacklist(email: string) {
+    // check if the users us blacklisted using the Lendsqr API
+    const uri = `${this.configService.get<string>('LENDSQR_API_URL')}/verification/karma/${email}`;
+
+    const data = await firstValueFrom(
+      this.httpService
+        .get(uri, {
+          headers: {
+            Authorization: `Bearer ${this.configService.get<string>('LENDSQR_API_KEY')}`,
+          },
+        })
+        .pipe(
+          catchError((err: AxiosError) => {
+            if (err.status !== HttpStatus.NOT_FOUND) {
+              // throw the error so the global handler can catch it
+              return throwError(
+                () =>
+                  new AppError(
+                    (err.response.data as { [x: string]: string }).message ||
+                      ErrorMessage.CUSTOM_SERVER_ERROR,
+                    err.status || HttpStatus.UNPROCESSABLE_ENTITY,
+                  ),
+              );
+            }
+            return of(null); // return observable
+          }),
+        ),
+    );
+
+    return data;
   }
 
   async login(authDTO: AuthDTO) {
@@ -82,20 +118,31 @@ export class AuthService {
   }
 
   async register(registrationDTO: RegistrationDTO) {
-    const SALT = await bcrypt.genSalt();
+    const data = await this.checkKarmaBlacklist(registrationDTO.email);
 
-    const hashedPassword = await bcrypt.hash(registrationDTO.password, SALT);
+    // Once data is null, create user
+    if (!data) {
+      const SALT = await bcrypt.genSalt();
 
-    await this.knex('users').insert({
-      id: this.knex.raw('UUID_TO_BIN(UUID())'),
-      email: registrationDTO.email,
-      first_name: registrationDTO.first_name,
-      last_name: registrationDTO.last_name,
-      password: hashedPassword,
-    });
+      const hashedPassword = await bcrypt.hash(registrationDTO.password, SALT);
 
-    return {
-      message: 'Account created successfully',
-    };
+      await this.knex('users').insert({
+        id: this.knex.raw('UUID_TO_BIN(UUID())'),
+        email: registrationDTO.email,
+        first_name: registrationDTO.first_name,
+        last_name: registrationDTO.last_name,
+        password: hashedPassword,
+      });
+
+      return {
+        message: 'Account created successfully',
+      };
+    }
+
+    // this will happen only in a case where the data returns something that is not null
+    throw new AppError(
+      ErrorMessage.CUSTOM_SERVER_ERROR,
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
   }
 }
