@@ -54,7 +54,10 @@ export class AuthService {
   async login(authDTO: AuthDTO) {
     const { email, password } = authDTO;
 
-    const data = await this.knex('users').where({ email }).first();
+    const data = await this.knex('users')
+      .select('*', this.knex.raw('BIN_TO_UUID(id) as id')) // convert the uuid binary to human readable string
+      .where({ email })
+      .first();
 
     if (data && (await bcrypt.compare(password, data.password))) {
       // 2) RETURN THE USER IF FOUND AND ADD THE TOKEN TO THE REQUEST BODY
