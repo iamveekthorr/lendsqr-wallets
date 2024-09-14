@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
+import { HttpModule } from '@nestjs/axios';
 
 import { validate } from './env.validate';
 
@@ -31,6 +32,10 @@ import { AuthModule } from './auth/auth.module';
         },
       }),
       inject: [ConfigService],
+    }),
+    HttpModule.register({
+      timeout: 15000,
+      maxRedirects: 5,
     }),
     UsersModule,
     AuthModule,
