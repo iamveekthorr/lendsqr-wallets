@@ -7,16 +7,19 @@ exports.up = async function (knex) {
 
   if (!exists) {
     await knex.schema.createTable('wallets', function (table) {
-      table.specificType('id', 'char(36)').primary().notNullable();
-      table.specificType('user_id', 'char(36)').notNullable();
+      table.specificType('id', 'BINARY(16)').primary().notNullable();
+      table.specificType('user_id', 'BINARY(16)').notNullable();
       table
         .foreign('user_id')
         .references('id')
         .inTable('users')
         .onDelete('CASCADE'); // Create relationship with user table ( Deletes the row if user is deleted.)
-      table.enu('currency', ['USD', 'EUR', 'NGN']).defaultTo('NGN'); // Defines the currency the wallet was created in
-      table.bigInteger('balance');
+      table.enu('currency', ['USD', 'EUR', 'NGN', 'GPB']).defaultTo('NGN'); // Defines the currency the wallet was created in
+      table.bigInteger('balance').defaultTo(0.0);
       table.timestamps(false, true);
+
+      // Add unique constraint to ensure user can only have one wallet per currency
+      table.unique(['user_id', 'currency']);
     });
   }
 };

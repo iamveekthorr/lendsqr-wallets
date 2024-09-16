@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 
 import { KNEX_CONNECTION } from '~/constants/constants';
 
-import { User } from './schemas/users.schema';
+import { User } from './dto/users.dto';
 
 @Injectable()
 export class UsersService {
@@ -12,6 +12,11 @@ export class UsersService {
   ) {}
 
   async getUserById(id: string): Promise<User | null> {
-    return this.knex('users').where({ id }).first();
+    const user = await this.knex('users')
+      .select('*', this.knex.raw('BIN_TO_UUID(id) as id'))
+      .where(this.knex.raw('id = UUID_TO_BIN(?)', [id]))
+      .first();
+
+    return user;
   }
 }

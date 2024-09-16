@@ -11,7 +11,7 @@ import { KNEX_CONNECTION } from '~/constants/constants';
 import { AppError } from '~/common/app-error.common';
 import { ErrorMessage } from '~/common/error-messages.enum';
 
-import { User } from '~/users/schemas/users.schema';
+import { User } from '~/users/dto/users.dto';
 
 import { JWTPayload } from './jwt-payload.type';
 import { AuthDTO } from './dto/auth.dto';
@@ -117,7 +117,7 @@ export class AuthService {
     );
   }
 
-  async register(registrationDTO: RegistrationDTO) {
+  async create(registrationDTO: RegistrationDTO) {
     const data = await this.checkKarmaBlacklist(registrationDTO.email);
 
     // Once data is null, create user

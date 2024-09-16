@@ -9,7 +9,7 @@ import { UsersService } from '~/users/users.service';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 
-import { JwtAuthGuard } from './guards/auth.guard';
+import { AppAuthGuard } from './guards/auth.guard';
 
 import { AccessTokenStrategy } from './strategies/access-token.strategy';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
@@ -25,7 +25,7 @@ import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
     AuthService,
     AccessTokenStrategy,
     RefreshTokenStrategy,
-    JwtAuthGuard,
+    AppAuthGuard,
     UsersService,
   ],
   controllers: [AuthController],
