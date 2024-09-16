@@ -22,7 +22,7 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
     let status = err.status || HttpStatus.INTERNAL_SERVER_ERROR;
 
     let message: { [key: string]: any } | string =
-      ErrorMessage.CUSTOM_SERVER_ERROR;
+      err.message || ErrorMessage.CUSTOM_SERVER_ERROR;
 
     let data: { [x: string]: any } | undefined | string = undefined;
 

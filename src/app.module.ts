@@ -15,6 +15,7 @@ import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { KnexModule } from './knex/knex.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { WalletsModule } from './wallets/wallets.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    WalletsModule,
   ],
   providers: [
     {
@@ -54,7 +56,6 @@ import { AuthModule } from './auth/auth.module';
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
     },
-
     JwtService,
   ],
 })
