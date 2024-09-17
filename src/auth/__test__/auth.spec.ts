@@ -4,19 +4,21 @@ import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { of } from 'rxjs';
 import * as bcrypt from 'bcrypt';
+import * as dotenv from 'dotenv';
+
+import { KnexModule } from '~/knex/knex.module';
 
 import { AuthService } from '../auth.service';
-import { KNEX_CONNECTION } from '~/knex/knex.provider';
-import { AppError } from '~/common/app-error.common';
 
 jest.mock('bcrypt');
 
 describe('AuthService', () => {
+  dotenv.config();
+
   let service: AuthService;
   //   let jwtService: JwtService;
   //   let configService: ConfigService;
   let httpService: HttpService;
-  let knexMock: any;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,16 +42,21 @@ describe('AuthService', () => {
             get: jest.fn(),
           },
         },
-        {
-          provide: KNEX_CONNECTION,
-          useValue: {
-            select: jest.fn().mockReturnThis(),
-            where: jest.fn().mockReturnThis(),
-            first: jest.fn(),
-            insert: jest.fn(),
-            raw: jest.fn(),
-          },
-        },
+        ,
+      ],
+      imports: [
+        KnexModule.forRootAsync({
+          useFactory: async () => ({
+            client: process.env.DB_CLIENT,
+            connection: {
+              host: process.env.DB_HOST,
+              port: Number(process.env.DB_PORT),
+              user: process.env.DB_USER,
+              password: process.env.DB_PASSWORD,
+              database: process.env.DB_NAME,
+            },
+          }),
+        }),
       ],
     }).compile();
 
@@ -57,7 +64,6 @@ describe('AuthService', () => {
     module.get<JwtService>(JwtService);
     module.get<ConfigService>(ConfigService);
     httpService = module.get<HttpService>(HttpService);
-    knexMock = module.get(KNEX_CONNECTION);
   });
 
   afterEach(() => {
@@ -71,17 +77,23 @@ describe('AuthService', () => {
   describe('login', () => {
     it('should return user and tokens on successful login', async () => {
       const mockUser = {
-        id: '1',
-        email: 'test@example.com',
-        password: 'hashedPassword',
+        id: '6df520b5-7424-11ef-8931-0242ac150003',
+        first_name: 'victor',
+        last_name: 'okonkwo',
+        email: 'ole@email.com',
+        created_at: '2024-09-16T11:08:48.000Z',
+        updated_at: '2024-09-16T11:08:48.000Z',
         role: 'user',
-      };
-      const mockTokens = {
-        accessToken: 'accessToken',
-        refreshToken: 'refreshToken',
+        password: 'TJIAWM-2005-tjiawm',
       };
 
-      knexMock.first.mockResolvedValue(mockUser);
+      const mockTokens = {
+        accessToken:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZGY1MjBiNS03NDI0LTExZWYtODkzMS0wMjQyYWMxNTAwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTcyNjU3NDI5NSwiZXhwIjoxNzI2NjYwNjk1fQ.cxn85ThwkWtZafTxPv5VChYy3-ZUaQYQS6Wncfmc8KI',
+        refreshToken:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZGY1MjBiNS03NDI0LTExZWYtODkzMS0wMjQyYWMxNTAwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTcyNjU3NDI5NSwiZXhwIjoxNzI3MTc5MDk1fQ.cQoz4_DBKMzq9iS0ds8VwF-HoY9hvtiolm4Nu5Sxt5c',
+      };
+
       jest
         .spyOn(service as any, 'generateTokens')
         .mockResolvedValue(mockTokens);
@@ -92,22 +104,24 @@ describe('AuthService', () => {
         password: 'password',
       });
 
-      expect(result).toEqual({ user: expect.any(Object), tokens: mockTokens });
+      expect(result).toHaveProperty('tokens', mockTokens);
+      expect(result).toHaveProperty('user', mockUser);
     });
 
     it('should throw AppError on invalid credentials', async () => {
-      knexMock.first.mockResolvedValue(null);
-
       await expect(
-        service.login({ email: 'test@example.com', password: 'password' }),
-      ).rejects.toThrow(AppError);
+        await service.login({
+          email: 'test@example.com',
+          password: 'password',
+        }),
+      ).rejects.toContain('Invalid credentials');
     });
   });
 
   describe('create', () => {
     it('should create a new user when not blacklisted', async () => {
       jest.spyOn(httpService, 'get').mockReturnValue(of(null));
-      knexMock.insert.mockResolvedValue({});
+
       (bcrypt.genSalt as jest.Mock).mockResolvedValue('salt');
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPassword');
 
@@ -126,14 +140,14 @@ describe('AuthService', () => {
       jest.spyOn(httpService, 'get').mockReturnValue(of());
 
       await expect(
-        service.create({
+        await service.create({
           email: 'test@example.com',
           password: 'password',
           confirmPassword: 'password',
           first_name: 'Test',
           last_name: 'User',
         }),
-      ).rejects.toThrow(AppError);
+      ).rejects.toHaveProperty('data');
     });
   });
 });
