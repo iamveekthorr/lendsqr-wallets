@@ -3,7 +3,7 @@ require('dotenv').config(); // Loads environment variables from .env file
 
 module.exports = {
   development: {
-    client: process.env.DB_CLIENT,
+    client: process.env.DB_CLIENT || 'mysql',
     connection: {
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
