@@ -1,45 +1,43 @@
-// knex.module.ts
 import { DynamicModule, Module } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import * as Knex from 'knex';
-
-import { KNEX_CONNECTION } from '~/constants/constants';
+import {
+  KNEX_CONNECTION,
+  createKnexProvider,
+  createKnexAsyncProvider,
+} from './knex.provider';
 
 @Module({})
 export class KnexModule {
-  static forRoot(config: Knex.Knex.Config): DynamicModule {
-    const knexProvider = {
-      provide: KNEX_CONNECTION,
-      useFactory: () => Knex(config),
-    };
+  constructor(private moduleRef: ModuleRef) {}
 
+  static forRoot(config: Knex.Knex.Config): DynamicModule {
     return {
       module: KnexModule,
-      providers: [knexProvider],
+      providers: [createKnexProvider(config)],
       exports: [KNEX_CONNECTION],
     };
   }
 
   static forRootAsync(options: {
     imports?: any[];
-    inject?: any[];
-    useFactory?: (
+    useFactory: (
       ...args: any[]
-    ) => Knex.Knex.Config | Promise<Knex.Knex.Config>;
+    ) => Promise<Knex.Knex.Config> | Knex.Knex.Config;
+    inject?: any[];
     global?: boolean;
   }): DynamicModule {
-    const knexProvider = {
-      provide: KNEX_CONNECTION,
-      useFactory: async (...args: any[]) =>
-        Knex(await options.useFactory(...args)),
-      inject: options.inject || [],
-    };
-
     return {
       global: options.global || false,
       module: KnexModule,
       imports: options.imports || [],
-      providers: [knexProvider],
+      providers: [createKnexAsyncProvider(options)],
       exports: [KNEX_CONNECTION],
     };
+  }
+
+  async onApplicationShutdown() {
+    const knex = this.moduleRef.get<Knex.Knex>(KNEX_CONNECTION);
+    await knex.destroy();
   }
 }

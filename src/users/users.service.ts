@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Knex } from 'knex';
 
-import { KNEX_CONNECTION } from '~/constants/constants';
+import { KNEX_CONNECTION } from '~/knex/knex.provider';
 
 import { User } from './dto/users.dto';
 

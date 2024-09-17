@@ -2,11 +2,13 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
+import { HttpService } from '@nestjs/axios';
 import * as bcrypt from 'bcrypt';
 import { Knex } from 'knex';
 import { AxiosError } from 'axios';
+import { catchError, firstValueFrom, of, throwError } from 'rxjs';
 
-import { KNEX_CONNECTION } from '~/constants/constants';
+import { KNEX_CONNECTION } from '~/knex/knex.provider';
 
 import { AppError } from '~/common/app-error.common';
 import { ErrorMessage } from '~/common/error-messages.enum';
@@ -16,8 +18,6 @@ import { User } from '~/users/dto/users.dto';
 import { JWTPayload } from './jwt-payload.type';
 import { AuthDTO } from './dto/auth.dto';
 import { RegistrationDTO } from './dto/registration.dto';
-import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom, of, throwError } from 'rxjs';
 
 @Injectable()
 export class AuthService {

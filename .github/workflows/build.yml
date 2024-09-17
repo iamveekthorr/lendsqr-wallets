@@ -3,7 +3,22 @@ name: Build app
 on: [push, pull_request]
 
 jobs:
+  # test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repo code
+  #       uses: actions/checkout@v3
+
+  #     - name: Use node 18
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '^18.18.0 || >=20.0.0'
+
+  #     - name: Run tests
+  #       run: npm run test
+
   build:
+    # needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo code
@@ -23,3 +38,17 @@ jobs:
 
       - name: Build app
         run: pnpm build
+
+  deploy:
+    needs:
+      # - test
+      - build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploy to production
+        # Add deployment steps...
+        run: echo "Deploying to production..."
