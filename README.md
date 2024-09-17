@@ -10,6 +10,8 @@ In this application a user can create an account, create multiple wallets in dif
 
 The overall application is built as an API which uses [JWT](https://auth0.com/docs/secure/tokens/json-web-tokens) as the authentication mechanism while providing [RBAC](https://auth0.com/docs/manage-users/access-control/rbac) to protected routes.
 
+The postman document will be found in the repo.
+
 ## Installation
 
 ```bash
