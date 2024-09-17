@@ -1,7 +1,7 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Knex } from 'knex';
 
-import { KNEX_CONNECTION } from '~/constants/constants';
+import { KNEX_CONNECTION } from '~/knex/knex.provider';
 import { AppError } from '~/common/app-error.common';
 
 import { Wallet } from './dto/wallet.dto';

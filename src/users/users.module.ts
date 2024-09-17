@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
 
-@Module({})
+import { KnexModule } from '~/knex/knex.module';
+
+@Module({ imports: [KnexModule] })
 export class UsersModule {}
