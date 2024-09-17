@@ -1,41 +1,43 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import * as dotenv from 'dotenv';
+
+import { KnexModule } from '~/knex/knex.module';
 
 import { WalletsService } from '../wallets.service';
 import { Currency } from '../enums/currency.enum';
 
-import { KNEX_CONNECTION } from '~/knex/knex.provider';
-import { AppError } from '~/common/app-error.common';
-
 describe('WalletsService', () => {
-  let service: WalletsService;
-  let knexMock: any;
+  dotenv.config();
 
-  beforeEach(async () => {
+  let service: WalletsService;
+
+  const mockWallet = {
+    id: 'wallet-id',
+    user_id: 'user-id',
+    balance: 100,
+    currency: Currency.NGN,
+  };
+
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        WalletsService,
-        {
-          provide: KNEX_CONNECTION,
-          useValue: {
-            select: jest.fn().mockReturnThis(),
-            where: jest.fn().mockReturnThis(),
-            whereRaw: jest.fn().mockReturnThis(),
-            andWhereRaw: jest.fn().mockReturnThis(),
-            first: jest.fn(),
-            insert: jest.fn(),
-            delete: jest.fn(),
-            transaction: jest.fn(),
-            decrement: jest.fn(),
-            increment: jest.fn(),
-            join: jest.fn().mockReturnThis(),
-            raw: jest.fn(),
-          },
-        },
+      providers: [WalletsService],
+      imports: [
+        KnexModule.forRootAsync({
+          useFactory: async () => ({
+            client: process.env.DB_CLIENT,
+            connection: {
+              host: process.env.DB_HOST,
+              port: Number(process.env.DB_PORT),
+              user: process.env.DB_USER,
+              password: process.env.DB_PASSWORD,
+              database: process.env.DB_NAME,
+            },
+          }),
+        }),
       ],
     }).compile();
 
     service = module.get<WalletsService>(WalletsService);
-    knexMock = module.get(KNEX_CONNECTION);
   });
 
   it('should be defined', () => {
@@ -43,12 +45,19 @@ describe('WalletsService', () => {
   });
 
   describe('create', () => {
-    it('should create a new wallet', async () => {
-      knexMock.insert.mockResolvedValue({});
-
+    it('should fail if wallet exists', async () => {
       const result = await service.create(
         { currency: Currency.NGN },
-        'user-id',
+        '6df520b5-7424-11ef-8931-0242ac150003',
+      );
+
+      expect(result).toContain('Duplicate entry');
+    });
+
+    it('should create a new wallet', async () => {
+      const result = await service.create(
+        { currency: Currency.NGN },
+        '6df520b5-7424-11ef-8931-0242ac150003',
       );
 
       expect(result).toEqual({ message: 'Wallet created successfully' });
@@ -57,58 +66,32 @@ describe('WalletsService', () => {
 
   describe('getWallet', () => {
     it('should return a wallet', async () => {
-      const mockWallet = {
-        id: 'wallet-id',
-        user_id: 'user-id',
-        balance: 100,
-        currency: Currency.NGN,
-      };
-      knexMock.first.mockResolvedValue(mockWallet);
-
-      const result = await service.getWallet('wallet-id', 'user-id');
+      const result = await service.getWallet(
+        '9bc9cab9-7463-11ef-8931-0242ac150003',
+        '6df520b5-7424-11ef-8931-0242ac150003',
+      );
 
       expect(result).toEqual(mockWallet);
     });
 
     it('should throw AppError when wallet not found', async () => {
-      knexMock.first.mockResolvedValue(null);
-
+      const id = '9bc9cab9-7463-11ef-8931-0242ac150003';
       await expect(
-        service.getWallet('non-existent-id', 'user-id'),
-      ).rejects.toThrow(AppError);
+        await service.getWallet(id, '8f0d8d0a-746a-11ef-8931-0242ac150003'),
+      ).rejects.toContain('No wallet found  ');
     });
   });
 
   describe('transfer', () => {
     it('should transfer funds between wallets', async () => {
-      const mockSenderWallet = {
-        id: 'sender-id',
-        user_id: 'user-id',
-        balance: 100,
-        currency: Currency.NGN,
-      };
-      const mockReceiverWallet = {
-        id: 'receiver-id',
-        user_id: 'receiver-user-id',
-        balance: 50,
-        currency: Currency.NGN,
-        first_name: 'John',
-        last_name: 'Doe',
-      };
-
-      knexMock.first
-        .mockResolvedValueOnce(mockSenderWallet)
-        .mockResolvedValueOnce(mockReceiverWallet);
-      knexMock.transaction.mockImplementation((cb) => cb(knexMock));
-
       const result = await service.transfer(
         {
-          senderWalletId: 'sender-id',
-          receiverWalletId: 'receiver-id',
+          senderWalletId: '9bc9cab9-7463-11ef-8931-0242ac150003',
+          receiverWalletId: '8f0d8d0a-746a-11ef-8931-0242ac150003',
           amount: 50,
           currency: Currency.NGN,
         },
-        'user-id',
+        '6df520b5-7424-11ef-8931-0242ac150003',
       );
 
       expect(result).toEqual({
@@ -117,27 +100,17 @@ describe('WalletsService', () => {
     });
 
     it('should throw AppError on insufficient funds', async () => {
-      const mockSenderWallet = {
-        id: 'sender-id',
-        user_id: 'user-id',
-        balance: 10,
-        currency: Currency.NGN,
-      };
-      knexMock.first.mockResolvedValue(mockSenderWallet);
-
       await expect(
-        service.transfer(
+        await service.transfer(
           {
-            senderWalletId: 'sender-id',
-            receiverWalletId: 'receiver-id',
-            amount: 50,
+            senderWalletId: '9bc9cab9-7463-11ef-8931-0242ac150003',
+            receiverWalletId: '8f0d8d0a-746a-11ef-8931-0242ac150003',
+            amount: 50000000,
             currency: Currency.NGN,
           },
-          'user-id',
+          '9bc9cab9-7463-11ef-8931-0242ac150003',
         ),
-      ).rejects.toThrow(AppError);
+      ).rejects.toThrow('Insufficient funds to complete this transfer');
     });
   });
-
-  // Add more test cases for other methods...
 });

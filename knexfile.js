@@ -33,4 +33,19 @@ module.exports = {
       directory: './migrations', // Path to store migrations
     },
   },
+  test: {
+    client: 'mysql',
+    connection: {
+      host: process.env.DB_HOST_TEST,
+      user: process.env.DB_USER_TEST,
+      password: process.env.DB_PASSWORD_TEST,
+      database: process.env.DB_NAME_TEST,
+    },
+    migrations: {
+      directory: './migrations',
+    },
+    seeds: {
+      directory: './seeds',
+    },
+  },
 };
