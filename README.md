@@ -12,6 +12,8 @@ The overall application is built as an API which uses [JWT](https://auth0.com/do
 
 The postman document will be found in the repo.
 
+[Link to the ER diagram](https://erd.dbdesigner.net/designer/schema/1726586104-lendsqr-be-test)
+
 ## Installation
 
 ```bash
