@@ -1,0 +1,1135 @@
+{
+	"info": {
+		"_postman_id": "028c37dd-7e2a-4e90-b706-baaa9f73378f",
+		"name": "Lendqr Wallets Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38316009"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 200){",
+									"    pm.collectionVariables.set(\"ACCESS_TOKEN\", pm.response.json().data.tokens.accessToken)",
+									"    pm.collectionVariables.set(\"REFRESH_TOKEN\", pm.response.json().data.tokens.refreshToken)",
+									"};"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ole@email.com\",\n    \"password\": \"TJIAWM-2005-tjiawm\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_LOCAL}}/{{API_VERSION}}/auth/login",
+							"host": [
+								"{{URL_LOCAL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"jdoe@email.com\",\n    \"password\": \"TJIAWM-2005-tjiawm\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/{{API_VERSION}}/auth/login",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"{{API_VERSION}}",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "705"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2c1-Ef4Q9hoS1dI0i+kk0M0psEEj7xA\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 14 Sep 2024 12:41:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"user\": {\n            \"id\": \"5bf04bc4-7295-11ef-8931-0242ac150003\",\n            \"first_name\": \"victor\",\n            \"last_name\": \"okonkwo\",\n            \"email\": \"jdoe@email.com\",\n            \"created_at\": \"2024-09-14T11:32:08.000Z\",\n            \"updated_at\": \"2024-09-14T11:32:08.000Z\",\n            \"role\": \"user\"\n        },\n        \"tokens\": {\n            \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YmYwNGJjNC03Mjk1LTExZWYtODkzMS0wMjQyYWMxNTAwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTcyNjMxNzY3MywiZXhwIjoxNzI2NDA0MDczfQ.majKM4C0vYI3ZzuFHRPe0YYjiX8pNvgRFdfruGxAb4g\",\n            \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1YmYwNGJjNC03Mjk1LTExZWYtODkzMS0wMjQyYWMxNTAwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTcyNjMxNzY3MywiZXhwIjoxNzI2OTIyNDczfQ.O83FXxopBD1gLta7YUebc3CMl3HOPOntt107dFluISU\"\n        }\n    }\n}"
+						},
+						{
+							"name": "400 - Bad Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"jdoe@email.com\",\n    \"password\": \"TJIAWM-2005-tjiaw\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/{{API_VERSION}}/auth/login",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"{{API_VERSION}}",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "248"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"f8-zaRhoWZE22OJx+1OhqXpIbzz/Rs\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 14 Sep 2024 12:48:04 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"message\": \"Invalid login credentials\",\n    \"data\": {\n        \"message\": \"Invalid login credentials\",\n        \"stack\": \"Error: Invalid login credentials\\n    at AuthService.login (/Users/victorokonkwo/Documents/lendsqr-be-test/src/auth/auth.service.ts:78:11)\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ole@email.com\",\n    \"password\": \"TJIAWM-2005-tjiawm\",\n    \"confirmPassword\": \"TJIAWM-2005-tjiawm\",\n    \"first_name\": \"victor\",\n    \"last_name\": \"okonkwo\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_LOCAL}}/{{API_VERSION}}/auth/create",
+							"host": [
+								"{{URL_LOCAL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"auth",
+								"create"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"jdoe@email.com\",\n    \"password\": \"TJIAWM-2005-tjiawm\",\n    \"confirmPassword\": \"TJIAWM-2005-tjiawm\",\n    \"first_name\": \"victor\",\n    \"last_name\": \"okonkwo\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/{{API_VERSION}}/auth/create-account",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"{{API_VERSION}}",
+										"auth",
+										"create-account"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "70"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"46-S/XDEEdAah+k4p0DOtgsRknG9Ik\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 14 Sep 2024 12:32:08 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"message\": \"Account created successfully\"\n    }\n}"
+						},
+						{
+							"name": "400 - Bad Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"jdoe@email.com\",\n    \"password\": \"TJIAWM-2005-tjiawm\",\n    \"confirmPassword\": \"TJIAWM-2005-tjiawm\",\n    \"first_name\": \"victor\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/{{API_VERSION}}/auth/create-account",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"{{API_VERSION}}",
+										"auth",
+										"create-account"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "152"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"98-COYR4J3nLFRfip/zjM5x/r1RU3A\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 14 Sep 2024 12:49:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"message\": \"Validation failed\",\n    \"data\": [\n        {\n            \"property\": \"last_name\",\n            \"constraints\": [\n                \"last_name must be a string\",\n                \"Last name cannot be empty!\"\n            ]\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Wallets",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets",
+							"host": [
+								"{{URL_LOCAL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"wallets"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"{{API_VERSION}}",
+										"wallets"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "69"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"45-ECEqEwslFu7904EJRqlActeKHYs\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 16 Sep 2024 19:40:15 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"message\": \"Wallet created successfully\"\n    }\n}"
+						},
+						{
+							"name": "409 - Conflict",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"{{API_VERSION}}",
+										"wallets"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"da8-Hze8MybuV5ZCuL4JR6nK5nZ698Y\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 16 Sep 2024 19:41:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 409,\n    \"message\": \"Failed to create entry using provided data. This entity already exists\",\n    \"data\": {\n        \"message\": \"insert into `wallets` (`currency`, `id`, `user_id`) values (DEFAULT, UUID_TO_BIN(UUID()), UUID_TO_BIN('6df520b5-7424-11ef-8931-0242ac150003')) - ER_DUP_ENTRY: Duplicate entry 'm\\\\xF5 \\\\xB5t$\\\\x11\\\\xEF\\\\x891\\\\x02B\\\\xAC\\\\x15\\\\x00\\\\x03-NGN' for key 'wallets.wallets_user_id_currency_unique'\",\n        \"stack\": \"Error: ER_DUP_ENTRY: Duplicate entry 'm\\\\xF5 \\\\xB5t$\\\\x11\\\\xEF\\\\x891\\\\x02B\\\\xAC\\\\x15\\\\x00\\\\x03-NGN' for key 'wallets.wallets_user_id_currency_unique'\\n    at Sequence._packetToError (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/mysql@2.18.1/node_modules/mysql/lib/protocol/sequences/Sequence.js:47:14)\\n    at Query.ErrorPacket (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/mysql@2.18.1/node_modules/mysql/lib/protocol/sequences/Query.js:79:18)\\n    at Protocol._parsePacket (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/mysql@2.18.1/node_modules/mysql/lib/protocol/Protocol.js:291:23)\\n    at Parser._parsePacket (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/mysql@2.18.1/node_modules/mysql/lib/protocol/Parser.js:433:10)\\n    at Parser.write (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/mysql@2.18.1/node_modules/mysql/lib/protocol/Parser.js:43:10)\\n    at Protocol.write (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/mysql@2.18.1/node_modules/mysql/lib/protocol/Protocol.js:38:16)\\n    at Socket.<anonymous> (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/mysql@2.18.1/node_modules/mysql/lib/Connection.js:88:28)\\n    at Socket.<anonymous> (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/mysql@2.18.1/node_modules/mysql/lib/Connection.js:526:10)\\n    at Socket.emit (node:events:514:28)\\n    at addChunk (node:internal/streams/readable:324:12)\\n    --------------------\\n    at Protocol._enqueue (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/mysql@2.18.1/node_modules/mysql/lib/protocol/Protocol.js:144:48)\\n    at Connection.query (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/mysql@2.18.1/node_modules/mysql/lib/Connection.js:198:25)\\n    at /Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/knex@3.1.0_mysql@2.18.1/node_modules/knex/lib/dialects/mysql/index.js:137:18\\n    at new Promise (<anonymous>)\\n    at Client_MySQL._query (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/knex@3.1.0_mysql@2.18.1/node_modules/knex/lib/dialects/mysql/index.js:131:12)\\n    at executeQuery (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/knex@3.1.0_mysql@2.18.1/node_modules/knex/lib/execution/internal/query-executioner.js:37:17)\\n    at Client_MySQL.query (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/knex@3.1.0_mysql@2.18.1/node_modules/knex/lib/client.js:154:12)\\n    at Runner.query (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/knex@3.1.0_mysql@2.18.1/node_modules/knex/lib/execution/runner.js:141:36)\\n    at ensureConnectionCallback (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/knex@3.1.0_mysql@2.18.1/node_modules/knex/lib/execution/internal/ensure-connection-callback.js:13:17)\\n    at Runner.ensureConnection (/Users/victorokonkwo/Documents/lendsqr-be-test/node_modules/.pnpm/knex@3.1.0_mysql@2.18.1/node_modules/knex/lib/execution/runner.js:318:20)\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Transfer Funds",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"receiverWalletId\": \"8f0d8d0a-746a-11ef-8931-0242ac150003\",\n    \"senderWalletId\": \"9bc9cab9-7463-11ef-8931-0242ac150003\",\n    \"currency\": \"NGN\",\n    \"amount\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets/transfer",
+							"host": [
+								"{{URL_LOCAL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"wallets",
+								"transfer"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "400 - Insufficient Funds",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"receiverWalletId\": \"8f0d8d0a-746a-11ef-8931-0242ac150003\",\n    \"senderWalletId\": \"9bc9cab9-7463-11ef-8931-0242ac150003\",\n    \"currency\": \"NGN\",\n    \"amount\": 5\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets/transfer",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"{{API_VERSION}}",
+										"wallets",
+										"transfer"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "389"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"185-B500YjjxiJU3AUrqfbwQ9B0w0mI\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 16 Sep 2024 20:36:56 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"message\": \"Insufficient funds to complete this transfer\",\n    \"data\": {\n        \"message\": \"Insufficient funds to complete this transfer\",\n        \"stack\": \"Error: Insufficient funds to complete this transfer\\n    at <anonymous> (/Users/victorokonkwo/Documents/lendsqr-be-test/src/wallets/wallets.service.ts:102:17)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Fund Wallet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"walletId\": \"9bc9cab9-7463-11ef-8931-0242ac150003\",\n    \"currency\": \"NGN\",\n    \"amount\": 1000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets/fund",
+							"host": [
+								"{{URL_LOCAL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"wallets",
+								"fund"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"walletId\": \"9bc9cab9-7463-11ef-8931-0242ac150003\",\n    \"currency\": \"NGN\",\n    \"amount\": 1000.00\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets/fund",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"{{API_VERSION}}",
+										"wallets",
+										"fund"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "125"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"7d-Tlz1YDHTIklPcL7tjTEhsP7ctpk\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 17 Sep 2024 00:56:22 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"message\": \"1000 (NGN) has been deposited successfully to 9bc9cab9-7463-11ef-8931-0242ac150003.\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Withdraw",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"walletId\": \"9bc9cab9-7463-11ef-8931-0242ac150003\",\n    \"currency\": \"NGN\",\n    \"amount\": 7000,\n    \"bankCode\": \"0001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets/withdraw",
+							"host": [
+								"{{URL_LOCAL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"wallets",
+								"withdraw"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"walletId\": \"9bc9cab9-7463-11ef-8931-0242ac150003\",\n    \"currency\": \"NGN\",\n    \"amount\": 7000,\n    \"bankCode\": \"0001\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets/withdraw",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"{{API_VERSION}}",
+										"wallets",
+										"withdraw"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "127"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"7f-0w58i0iHcv1PUCRG0fkUTeGajnY\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 17 Sep 2024 00:56:09 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"message\": \"7000 (NGN) has been withdrawn successfully from 9bc9cab9-7463-11ef-8931-0242ac150003.\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Wallets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets",
+							"host": [
+								"{{URL_LOCAL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"wallets"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"{{API_VERSION}}",
+										"wallets"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "233"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"e9-T8e6fqwgPhqYrRHIzZGzyL3kgT0\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 16 Sep 2024 16:54:31 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"id\": \"9e4d1744-7424-11ef-8931-0242ac150003\",\n            \"user_id\": \"6df520b5-7424-11ef-8931-0242ac150003\",\n            \"currency\": \"NGN\",\n            \"balance\": 0,\n            \"created_at\": \"2024-09-16T11:10:09.000Z\",\n            \"updated_at\": \"2024-09-16T11:10:09.000Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Wallet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets/:id",
+							"host": [
+								"{{URL_LOCAL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"wallets",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "9bc9cab9-7463-11ef-8931-0242ac150003"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets/:id",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"{{API_VERSION}}",
+										"wallets",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "9bc9cab9-7463-11ef-8931-0242ac150003"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "235"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"eb-FbPhUx9MoWyg4OHs2zIUr1bM85c\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 17 Sep 2024 00:56:27 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": \"9bc9cab9-7463-11ef-8931-0242ac150003\",\n        \"user_id\": \"6df520b5-7424-11ef-8931-0242ac150003\",\n        \"currency\": \"NGN\",\n        \"balance\": 21000,\n        \"created_at\": \"2024-09-16T18:41:03.000Z\",\n        \"updated_at\": \"2024-09-16T18:41:03.000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Wallet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_LOCAL}}/{{API_VERSION}}/wallets/:id",
+							"host": [
+								"{{URL_LOCAL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"wallets",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "9e4d1744-7424-11ef-8931-0242ac150003"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "ACCESS_TOKEN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "REFRESH_TOKEN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "URL_LOCAL",
+			"value": "127.0.0.1:3000",
+			"type": "string"
+		},
+		{
+			"key": "API_VERSION",
+			"value": "v1",
+			"type": "string"
+		},
+		{
+			"key": "URL_LIVE",
+			"value": "https://victor-okonkwo-lendsqr-be-test.onrender.com",
+			"type": "string"
+		}
+	]
+}
