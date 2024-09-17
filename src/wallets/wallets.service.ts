@@ -8,6 +8,8 @@ import { Wallet } from './dto/wallet.dto';
 import { CreateWalletDTO } from './dto/create-wallet.dto';
 import { CreateTransferDTO } from './dto/create-transfers.dto';
 import { ReceiverWalletDTO } from './dto/receiver-wallet.dto';
+import { FundWalletDTO } from './dto/fund-wallet.dto';
+import { WithdrawalDTO } from './dto/withdrawal.dto';
 
 @Injectable()
 export class WalletsService {
@@ -150,10 +152,116 @@ export class WalletsService {
           )
           .whereRaw('id = UUID_TO_BIN(?)', [receiverWalletId]);
 
-        console.log(receiverWallet, 'receiver...');
+        return {
+          message: `${amount} (${currency}) has been transferred successfully to ${receiverWallet.first_name} ${receiverWallet.last_name}`,
+        };
+      },
+    );
+  }
+
+  async fund(createWalletsDto: FundWalletDTO, user_id: string) {
+    const { walletId, amount, currency } = createWalletsDto;
+    // begin transactions - SQL
+    return await this.knex.transaction(
+      async (transaction: Knex.Transaction<Wallet, Wallet[]>) => {
+        // find the wallet
+        const wallet: Wallet = await this.knex<Wallet>('wallets')
+          .select(
+            '*',
+            this.knex.raw('BIN_TO_UUID(id) as id'),
+            this.knex.raw('BIN_TO_UUID(user_id) as user_id'),
+          )
+          .whereRaw('id = UUID_TO_BIN(?)', [walletId])
+          .andWhereRaw('user_id = UUID_TO_BIN(?)', [user_id])
+          .first();
+
+        // Check if user has a wallet
+        if (!wallet) {
+          throw new AppError(
+            `No wallet found with the id of ${walletId}. Please check wallet id again or create one if you do not have one`,
+            HttpStatus.NOT_FOUND,
+          );
+        }
+
+        // make sure the funds being transferred are in the same currency
+        if (wallet.currency !== currency) {
+          throw new AppError(
+            `Transfer currency does not match the sender's wallet currency`,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+
+        // Credit wallet
+        await transaction('wallets')
+          .select(
+            '*',
+            this.knex.raw('BIN_TO_UUID(id) as id'),
+            this.knex.raw('BIN_TO_UUID(user_id) as user_id'),
+          )
+          .whereRaw('id = UUID_TO_BIN(?)', [wallet.id])
+          .andWhereRaw('user_id = UUID_TO_BIN(?)', [user_id])
+          .increment('balance', amount);
 
         return {
-          message: `${amount} ${currency} has been transferred successfully to ${receiverWallet.first_name} ${receiverWallet.last_name}`,
+          message: `${amount} (${currency}) has been deposited successfully to ${wallet.id}.`,
+        };
+      },
+    );
+  }
+
+  async withdraw(createWalletsDto: WithdrawalDTO, user_id: string) {
+    const { walletId, amount, currency } = createWalletsDto;
+    // begin transactions - SQL
+    return await this.knex.transaction(
+      async (transaction: Knex.Transaction<Wallet, Wallet[]>) => {
+        // find the wallet
+        const wallet: Wallet = await this.knex<Wallet>('wallets')
+          .select(
+            '*',
+            this.knex.raw('BIN_TO_UUID(id) as id'),
+            this.knex.raw('BIN_TO_UUID(user_id) as user_id'),
+          )
+          .whereRaw('id = UUID_TO_BIN(?)', [walletId])
+          .andWhereRaw('user_id = UUID_TO_BIN(?)', [user_id])
+          .first();
+
+        // Check if user has a wallet
+        if (!wallet) {
+          throw new AppError(
+            `No wallet found with the id of ${walletId}. Please check wallet id again or create one if you do not have one`,
+            HttpStatus.NOT_FOUND,
+          );
+        }
+
+        // make sure the funds being transferred are in the same currency
+        if (wallet.currency !== currency) {
+          throw new AppError(
+            `Transfer currency does not match the sender's wallet currency`,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+
+        // make sure the user has enough funds
+        if (wallet.balance < amount) {
+          throw new AppError(
+            'Insufficient funds to complete this transfer',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+
+        // Debit wallet
+        await transaction('wallets')
+          .select(
+            '*',
+            this.knex.raw('BIN_TO_UUID(id) as id'),
+            this.knex.raw('BIN_TO_UUID(user_id) as user_id'),
+          )
+          .whereRaw('id = UUID_TO_BIN(?)', [wallet.id])
+          .andWhereRaw('user_id = UUID_TO_BIN(?)', [user_id])
+          .decrement('balance', amount);
+
+        return {
+          message: `${amount} (${currency}) has been withdrawn successfully from ${wallet.id}.`,
         };
       },
     );

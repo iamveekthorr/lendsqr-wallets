@@ -21,6 +21,8 @@ import { WalletsService } from './wallets.service';
 
 import { CreateWalletDTO } from './dto/create-wallet.dto';
 import { CreateTransferDTO } from './dto/create-transfers.dto';
+import { FundWalletDTO } from './dto/fund-wallet.dto';
+import { WithdrawalDTO } from './dto/withdrawal.dto';
 
 @Controller('wallets')
 export class WalletsController {
@@ -62,5 +64,20 @@ export class WalletsController {
     @CurrentUser() user: User,
   ) {
     return this.walletsService.transfer(createWalletsDto, user.id);
+  }
+  @Post('/fund')
+  @UseGuards(AppAuthGuard, RolesGuard)
+  @Roles(Role.USER)
+  @HttpCode(HttpStatus.OK)
+  fund(@Body() fundWalletDto: FundWalletDTO, @CurrentUser() user: User) {
+    return this.walletsService.fund(fundWalletDto, user.id);
+  }
+
+  @Post('/withdraw')
+  @UseGuards(AppAuthGuard, RolesGuard)
+  @Roles(Role.USER)
+  @HttpCode(HttpStatus.OK)
+  withdraw(@Body() withdrawalDto: WithdrawalDTO, @CurrentUser() user: User) {
+    return this.walletsService.withdraw(withdrawalDto, user.id);
   }
 }
