@@ -47,9 +47,6 @@ importers:
       helmet:
         specifier: ^7.1.0
         version: 7.1.0
-      husky:
-        specifier: ^9.1.6
-        version: 9.1.6
       knex:
         specifier: ^3.1.0
         version: 3.1.0(mysql@2.18.1)
@@ -117,6 +114,9 @@ importers:
       eslint-plugin-prettier:
         specifier: ^5.0.0
         version: 5.2.1(eslint-config-prettier@9.1.0(eslint@8.57.1))(eslint@8.57.1)(prettier@3.3.3)
+      husky:
+        specifier: ^9.1.6
+        version: 9.1.6
       jest:
         specifier: ^29.5.0
         version: 29.7.0(@types/node@22.5.5)(ts-node@10.9.2(@types/node@22.5.5)(typescript@5.6.2))
